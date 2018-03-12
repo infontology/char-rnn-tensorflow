@@ -15,7 +15,7 @@ def main():
                        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--save_dir', type=str, default='save',
                         help='model directory to store checkpointed models')
-    parser.add_argument('-n', type=int, default=500,
+    parser.add_argument('-n', type=int, default=5000,
                         help='number of characters to sample')
     parser.add_argument('--prime', type=text_type, default=u' ',
                         help='prime text')
@@ -39,8 +39,11 @@ def sample(args):
         ckpt = tf.train.get_checkpoint_state(args.save_dir)
         if ckpt and ckpt.model_checkpoint_path:
             saver.restore(sess, ckpt.model_checkpoint_path)
-            print(model.sample(sess, chars, vocab, args.n, args.prime,
-                               args.sample).encode('utf-8'))
+            sam = model.sample(sess, chars, vocab, args.n, args.prime,
+                               args.sample).encode('utf-8')
+            print (sam)
+            with open("sample.txt", 'w') as f:
+                f.write(str(sam.decode('utf-8')))
 
 if __name__ == '__main__':
     main()
